@@ -42,6 +42,9 @@ def plot_emg_for_assessment(parent_dir, protocol, assessment, column):
         # the directory for a specific subject
         subject_path = Path(os.path.join(parent_dir, subject_folder))
 
+        if not os.path.isdir(subject_path):
+            continue
+
         # the proper subdirectory
         walk_test_folder = Path(os.path.join(parent_dir, subject_folder, assessment)) / protocol
 
@@ -84,7 +87,7 @@ def plot_emg_for_assessment(parent_dir, protocol, assessment, column):
             assisted_df['Smoothed'] + assisted_df['Std'],
             alpha=0.2)
         
-    plt.title(f'{assessment} {column}')
+    plt.title(f'{assessment} {column} - {protocol}')
     plt.xlabel('Time')
     plt.legend()
     plt.tight_layout()
@@ -107,6 +110,9 @@ def plot_emg_assessment_for_all_cols(parent_dir, protocol, assessment):
     for subject_folder in os.listdir(parent_dir):
         # the directory for a specific subject
         subject_path = Path(os.path.join(parent_dir, subject_folder))
+
+        if not os.path.isdir(subject_path):
+            continue
 
         # the proper subdirectory
         walk_test_folder = Path(os.path.join(parent_dir, subject_folder, assessment)) / protocol
@@ -164,7 +170,7 @@ def plot_emg_assessment_for_all_cols(parent_dir, protocol, assessment):
                     assisted_df['Smoothed'] + assisted_df['Std'],
                     alpha=0.2)
                 
-            plt.title(f'{assessment} {column}')
+            plt.title(f'{assessment} {column} - {protocol}')
             plt.xlabel('Time')
             plt.legend()
             plt.tight_layout()
@@ -182,6 +188,9 @@ def plot_emg(parent_dir, protocol, column):
     for subject_folder in os.listdir(parent_dir):
         # the directory for a specific subject
         subject_path = Path(os.path.join(parent_dir, subject_folder))
+
+        if not os.path.isdir(subject_path):
+            continue
 
         assisted_dfs = {}
         for assessment_folder in subject_path.iterdir():
@@ -227,7 +236,7 @@ def plot_emg(parent_dir, protocol, column):
             assisted_df['Smoothed'] = assisted_df.loc[:, column].rolling(window=min_length // 5, center=True).mean()
             plt.plot(assisted_df['scaled_elapsed_s'], assisted_df['Smoothed'], label=label)
             
-        plt.title(f'{subject_folder} {column}')
+        plt.title(f'{subject_folder} {column} - {protocol}')
         plt.xlabel('Time')
         plt.legend()
         plt.tight_layout()
@@ -252,6 +261,9 @@ def plot_mean_emg(parent_dir, protocol):
     for subject_folder in os.listdir(parent_dir):
         # the directory for a specific subject
         subject_path = Path(os.path.join(parent_dir, subject_folder))
+
+        if not os.path.isdir(subject_path):
+            continue
 
         for assessment_folder in subject_path.iterdir():
             # the proper subdirectory
@@ -331,7 +343,7 @@ def plot_mean_emg(parent_dir, protocol):
                 unassisted_means[column].plot(kind='line', label='Unassisted', marker='o')
                 assisted_means[column].plot(kind='line', label='Assisted', marker='o')
                 
-                plt.title(f'Mean {column} - Assisted vs Unassisted')
+                plt.title(f'Mean {column} - Assisted vs Unassisted {protocol}')
                 plt.xlabel('Assessment')
                 plt.ylabel(f'Mean {column}')
                 plt.xticks(ticks=range(len(unassisted_means)), labels=unassisted_means['assessment'], rotation=0)
@@ -343,9 +355,9 @@ def plot_mean_emg(parent_dir, protocol):
 def main():
     data_dir = './data'
     protocol = 'T25FW'
-    column = 'lgl'
+    column = 'lpl'
     assessment = 'FinalAssessment'
-    plot_emg_assessment_for_all_cols(data_dir, protocol, assessment)
+    plot_emg(data_dir, protocol, column)
 
 if __name__ == '__main__':
     main()
