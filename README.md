@@ -1,5 +1,30 @@
 # Multiple Sclerosis Gait Augmentation With The Cionic Neural Sleeve
 
+## Notes on Running Code
+- Due to the sourcing of this dataset coming from Cionic itself, the sourcing code only works with their internal repository. The sourcing file works as a command line tool and a secret access token provided by Cionic is required to actual source the data. Thus, the file in this repository will not actually work. However, I have included the code to show an example of the steps I used to actually source this data.
+
+## Step to run eda.py:
+1. Set-up and activate a virtual environment:
+Mac OS/Linux:
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+Windows:
+```
+python -m venv venv
+venv\Scripts\activate
+```
+### 2. Install the required dependencies
+```
+pip install -r requirements.txt
+```
+### 3. Run the EDA Pipeline
+```
+python eda.py
+```
+- Notes: The EDA file right now just runs the function 'plot_emg.' However, for actual EDA, this was modified depending on what aspect of the data was being analyzed at the time.
+
 ## Executive Summary
 ### Motivation
 Multiple Sclerosis (MS) is an autoimmune disease of the central nervous system. It is the leading cause of non-traumatic neurological disability in young adults and affects over 2 million people worldwide ([Hone et. al](https://pmc.ncbi.nlm.nih.gov/articles/PMC8860835/)). There are a wealth of early on-set detection methods including lumbar punctures, MRIs, etc. One of the earliest signs of the on-set of multiple sclerosis is trouble walking and difficulty with balance and the disease can further lead into spasticity and paralysis. I want to curate a dataset that consists of data to help predict/warn of the early on-set of multiple sclerosis based on sensor data relating to muscle twitches and walking stability.
@@ -70,11 +95,11 @@ The SubjectInformation CSV contains relevant information for each participant of
 - YrsDiag_MS: The number of years since a participant was first diagnosed with MS
 - Impaired_Limb: 0 = Left, 1 = Right
 
-### Power Analysis
+## Power Analysis
 
 Since this dataset was directly sourced from a pilot study conducted by Cionic, the sample size was entirely dependent on the size of the study conducted. This pilot study consisted of 6 patients, 2 male and 4 female. Their ages ranged between 46-64 and they had been living with multiple sclerosis between 7-22 years. For each participant, only their most impacted leg was tested in the study. Each participant went through an initial assessment, a midpoint assessment and a final assessment. All participants were assigned a hip-worn Actigraph activity monitor, a Cionic Neural Sleeve (an adaptive, current steering FES brace) to be worn on the most impacted leg and prescribed a home-based intervention of 15 minutes of walking for 5 days a week for 12 weeks. The Actigraph was worn for the duration of the 12-week walking intervention, while the sleeve was only worn for 6 weeks of the study.
 
-### Exploratory Data Analysis
+## Exploratory Data Analysis
 
 For EDA, Cionic has in their research portal a notebook to extract and analyze gait data for each assessment, and each test (6-minute walk test or timed 25-foot walk). This results in graphs that look like the following: 
 
@@ -107,14 +132,12 @@ When inspecting the mean values across tests, I found that unassisted tests had 
 
 When looking at the time-series themselves for each subject, it was very difficult to find relationships between the time-series and the subjects. I looked at both the 25-foot walk and the 6-minute walk test and found that there weren't many trends that followed. I found that different participants were more extreme than others depending on which electrode was being recorded, but it wasn't consistently one participant. That is, each subject had at least one electrode in which they had the most extreme values. But, that was also not consistent between assessments (i.e. There was not the case where a participant was consistently worse than the others between the initial, midpoint and final assessments). The 25-foot walk test seemed to have more extreme values and variation compared to the 6-minute walk test. I also tried analyzing the data to see if there were trends in things like gender, time since they've been diagnosed with MS, or if they were in group A or B, but have not found much correlation to that and the graphs. 
 
-### Link To Publicly Available Dataset
+## Link To Publicly Available Dataset
 
-### Ethics Statement
+## Ethics Statement
 
 This pilot study adheres to the highest ethical standards, and measures were placed to ensure integrity, respect and responsibility throughout the study. Participation in the pilot study was voluntary and each participant provided written informed consent. In order to prioritize patients’ privacy and confidentiality, all identifying information has been anonymized. Study protocols have been approved by the Cleveland State University IRB. This clinical trial is listed under the name “Impact of the Cionic Neural Sleeve on Mobility in Multiple Sclerosis“ and has trial ID: NCT05964829.
 
-### Open-Source License
+## Open-Source License
 
 [Open Data Commons Open Database License v1.0](https://physionet.org/about/licenses/open-data-commons-open-database-license-v10/)
-
-### References
