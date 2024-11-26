@@ -133,6 +133,7 @@ When inspecting the mean values across tests, I found that unassisted tests had 
 When looking at the time-series themselves for each subject, it was very difficult to find relationships between the time-series and the subjects. I looked at both the 25-foot walk and the 6-minute walk test and found that there weren't many trends that followed. I found that different participants were more extreme than others depending on which electrode was being recorded, but it wasn't consistently one participant. That is, each subject had at least one electrode in which they had the most extreme values. But, that was also not consistent between assessments (i.e. There was not the case where a participant was consistently worse than the others between the initial, midpoint and final assessments). The 25-foot walk test seemed to have more extreme values and variation compared to the 6-minute walk test. I also tried analyzing the data to see if there were trends in things like gender, time since they've been diagnosed with MS, or if they were in group A or B, but have not found much correlation to that and the graphs. 
 
 ## Link To Publicly Available Dataset
+Due to some missing data from Cionic that they are currently working on having re-uploaded, and Physionet's stated rule of "When a project is published, its content is fixed and cannot be changed" I have not yet uploaded the dataset to be open-sourced. However, if you would like to see the prepared research submission for Physionet you can find it [here](https://docs.google.com/document/d/1Y9x5Y1TU81gOJfwa9ax7w0_uB34mP11zjfe7-tt0ND8/edit?usp=sharing).
 
 ## Ethics Statement
 
@@ -140,4 +141,4 @@ This pilot study adheres to the highest ethical standards, and measures were pla
 
 ## Open-Source License
 
-[Open Data Commons Open Database License v1.0](https://physionet.org/about/licenses/open-data-commons-open-database-license-v10/)
+[Creative Commons Attribution 4.0 International Public License](https://physionet.org/about/licenses/creative-commons-attribution-40-international-public-license/)
