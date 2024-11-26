@@ -33,8 +33,8 @@ def test_is_left():
     properly returns True or False
     '''
     # assign the folder which contains subject CSVs and the get the dataframe with subject information
-    data_folder = '../data'
-    subject_df = pd.read_csv('../data/SubjectInformation.csv')
+    data_folder = os.path.join(os.path.dirname(__file__), '../data')
+    subject_df = pd.read_csv(os.path.join(data_folder, 'SubjectInformation.csv'))
 
     # go through the data folder
     for item in os.listdir(data_folder):
