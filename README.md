@@ -3,7 +3,7 @@
 ## Notes on Running Code
 - Due to the sourcing of this dataset coming from Cionic itself, the sourcing code only works with their internal repository. The sourcing file works as a command line tool and a secret access token provided by Cionic is required to actual source the data. Thus, the file in this repository will not actually work. However, I have included the code to show an example of the steps I used to actually source this data.
 
-## Step to run eda.py:
+## Steps to run eda.py:
 1. Set-up and activate a virtual environment:
 Mac OS/Linux:
 ```
