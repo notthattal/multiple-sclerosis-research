@@ -17,11 +17,11 @@ venv\Scripts\activate
 ```
 ### 2. Install the required dependencies
 ```
-pip install -r requirements.txt
+pip install .
 ```
 ### 3. Run the EDA Pipeline
 ```
-python eda.py
+run-eda
 ```
 - Notes: The EDA file right now just runs the function 'plot_emg.' However, for actual EDA, this was modified depending on what aspect of the data was being analyzed at the time.
 
