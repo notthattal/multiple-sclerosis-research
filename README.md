@@ -25,6 +25,11 @@ run-eda
 ```
 - Notes: The EDA file right now just runs the function 'plot_emg.' However, for actual EDA, this was modified depending on what aspect of the data was being analyzed at the time.
 
+### 4. (Optional) To run unit testing:
+```
+pytest -v
+```
+
 ## Executive Summary
 ### Motivation
 Multiple Sclerosis (MS) is an autoimmune disease of the central nervous system. It is the leading cause of non-traumatic neurological disability in young adults and affects over 2 million people worldwide ([Hone et. al](https://pmc.ncbi.nlm.nih.gov/articles/PMC8860835/)). There are a wealth of early on-set detection methods including lumbar punctures, MRIs, etc. One of the earliest signs of the on-set of multiple sclerosis is trouble walking and difficulty with balance and the disease can further lead into spasticity and paralysis. I want to curate a dataset that consists of data to help predict/warn of the early on-set of multiple sclerosis based on sensor data relating to muscle twitches and walking stability.
