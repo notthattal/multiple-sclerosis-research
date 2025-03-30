@@ -109,27 +109,27 @@ Since this dataset was directly sourced from a pilot study conducted by Cionic, 
 For EDA, Cionic has in their research portal a notebook to extract and analyze gait data for each assessment, and each test (6-minute walk test or timed 25-foot walk). This results in graphs that look like the following: 
 
 1. There are graphs to view events like heel strike and toe-off in a recording cycle:
-![Heel Strike](./img/HeelStrike.png)
+![Heel Strike](./data/img/HeelStrike.png)
 
 2. We can analyze a specific part of the leg, such as the knee:
-![Knee Angles](./img/KneeAngles.png)
+![Knee Angles](./data/img/KneeAngles.png)
 
 3. For each angle, we can view that angle broken down. In this case it's knee flexion:
-![Knee Flexion](./img/KneeFlexion.png)
+![Knee Flexion](./data/img/KneeFlexion.png)
 
 4. And we can see those angles in relation to each other:
-![All Angles](./img/AllAngles.png)
+![All Angles](./data/img/AllAngles.png)
 
 However, what was not present in their notebooks was the ability to analyze stimulated vs unstimulated tests and to break that down by subject. So, I created my own EDA pipeline to perform that analysis.
 
 1. I created a function that is able to compare all subjects (with disabilities in the same leg) for a specific assessment:
-![All Subjects](./img/AssistedFinalAssessment.png)
+![All Subjects](./data/img/AssistedFinalAssessment.png)
 
 2. We can now also view how a subject progressed over each assessment (looking at assisted tests below):
-![Assisted Assessments](./img/Subject2EachAssessment.png)
+![Assisted Assessments](./data/img/Subject2EachAssessment.png)
 
 3. I also wanted to compare the means for all subjects over the initial and final assessments:
-![Mean Assessments](./img/MeanAssessment.png)
+![Mean Assessments](./data/img/MeanAssessment.png)
 
 Results:
 
