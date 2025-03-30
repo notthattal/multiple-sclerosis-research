@@ -4,7 +4,6 @@ import os
 import pandas as pd
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 
@@ -249,7 +248,7 @@ def train_dl_model(train_dataset, test_dataset, device, save_model_path='', batc
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
     
     # define the lr scheduler
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5)
 
     # train the model
     print("Starting training...")
