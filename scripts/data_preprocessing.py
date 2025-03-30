@@ -458,16 +458,24 @@ def prep_collection_for_inference(collection_path, scaler, window_size=4):
 
     return X_features
 
-def main():
+def run_data_preprocessing_pipeline(ms_folder='MSGaits', normative_folder='NormativeGaits', output_dir='processed_data'):
+    '''
+    Runs the entire data preprocessing pipeline and saves the processed sensor and metadata to their respective files
+
+    Inputs:
+        - ms_folder (str): The subfolder name within the data directory to find the MS data
+        - normative_folder (str): The subfolder name within the data directory to find the normative data
+        - output_dir (str): The subfolder name within the data directory to output the processed data
+    '''
     # set the root directory
     root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
     # set the input raw data directories
-    ms_folder = os.path.join(root_dir, "data", "raw_data", "MSGaits")
-    normative_folder = os.path.join(root_dir, "data", "raw_data", "NormativeGaits")
+    ms_folder = os.path.join(root_dir, "data", "raw_data", ms_folder)
+    normative_folder = os.path.join(root_dir, "data", "raw_data", normative_folder)
 
     # set the directory to store the processed data
-    output_dir = os.path.join(root_dir, "data", "processed_data")
+    output_dir = os.path.join(root_dir, "data", output_dir)
 
     # get the processed arrays to be stored
     sensor_data, metadata = process_and_combine_data(ms_folder, normative_folder)
@@ -477,6 +485,10 @@ def main():
     metadata.to_csv(os.path.join(output_dir, "combined_metadata.csv"), index=False)
 
     print(f"\nCombined dataset saved with {sensor_data.shape[0]} steps and {sensor_data.shape[2]} sensors.")
+
+def main():
+    # run the entire data preprocessing pipeline
+    run_data_preprocessing_pipeline()
 
 if __name__=='__main__':
     main()

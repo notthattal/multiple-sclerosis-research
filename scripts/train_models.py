@@ -1,4 +1,4 @@
-from data_preprocessing import get_train_test_datasets, set_seeds
+from data_preprocessing import get_train_test_datasets, set_seeds, run_data_preprocessing_pipeline
 from deep_learning_model import train_dl_model
 from naive_model import train_naive_model
 import numpy as np
@@ -15,6 +15,9 @@ def main():
     # set the device to mps if available otherwise cpu
     device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
     print(f"Using device: {device}")
+
+    # run the data preprocessing pipeline
+    run_data_preprocessing_pipeline()
 
     # set the root and data directories
     root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
