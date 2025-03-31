@@ -1,24 +1,38 @@
-from setuptools import setup, find_packages
-
-def parse_requirements(filename):
-    """Load requirements from a pip requirements file."""
-    with open(filename, "r") as f:
-        return f.read().splitlines()
+from setuptools import setup
+from glob import glob
 
 setup(
-    name="dataset-project",
+    name="multiple-sclerosis-research",
     version="1.0.0",
     author="Tal Erez",
     author_email="tal.erez@duke.edu",
-    description="Dataset Project for AIPI 510s",
+    description="Multiple Sclerosis Research",
     url="https://github.com/notthattal/multiple-sclerosis-research",
-    packages=find_packages(),
-    install_requires=parse_requirements("requirements.txt"),
-    py_modules=["eda"],
+    py_modules=[
+        "data_preprocessing",
+        "deep_learning_model",
+        "naive_model",
+        "traditional_model",
+        "train_models"
+    ],
+    package_dir={'': 'scripts'},
+    install_requires=[
+        "numpy==2.0.2",
+        "pandas==2.2.3",
+        "scikit-learn==1.6.1",
+        "torch==2.6.0",
+        "scipy==1.13.1",
+    ],
     entry_points={
         "console_scripts": [
-            "run-eda=eda:main",
+            "train-models=train_models:main",
         ],
     },
-    python_requires=">=3.9"
+    python_requires=">=3.9",
+    include_package_data=True,
+    data_files=[
+         ('data/raw_data/MSGaits', glob('data/raw_data/MSGaits/*')),
+         ('data/raw_data/NormativeGaits', glob('data/raw_data/NormativeGaits/*')),
+         ('data/processed_data', glob('data/processed_data/*'))
+    ],
 )

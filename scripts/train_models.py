@@ -19,13 +19,17 @@ def main():
     # run the data preprocessing pipeline
     run_data_preprocessing_pipeline()
 
-    # set the root and data directories
-    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    # set the root, data and models directories
+    root_dir = os.getcwd()
     data_dir = os.path.join(root_dir, "data", "processed_data")
+    models_dir = os.path.join(root_dir, "models")
+
+    # create the models directory if it doesn't exist
+    os.makedirs(models_dir, exist_ok=True)
 
     # set the model save paths
-    traditional_model_save_path = os.path.join(root_dir, 'models', 'ms_traditional_model.pkl')
-    dl_model_save_path = os.path.join(root_dir, 'models', 'ms_dl_model.pth')
+    traditional_model_save_path = os.path.join(models_dir, 'ms_traditional_model.pkl')
+    dl_model_save_path = os.path.join(models_dir, 'ms_dl_model.pth')
 
     # load the sensor data, metadata and get the ground-truth labels
     X = np.load(os.path.join(data_dir, "sensor_data.npy"))
@@ -45,7 +49,7 @@ def main():
     train_dl_model(train_dataset, test_dataset, device, dl_model_save_path)
 
     # save the scaler that was used to normalize the training data
-    scaler_save_path = os.path.join(root_dir, 'models', 'scaler.pkl')
+    scaler_save_path = os.path.join(models_dir, 'scaler.pkl')
     with open(scaler_save_path, 'wb') as f:
         pickle.dump(scaler, f)
     print(f"Scaler saved to {scaler_save_path}")
