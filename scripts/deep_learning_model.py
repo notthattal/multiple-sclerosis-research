@@ -147,7 +147,7 @@ def predict_dl_model(collection_path, model_path, scaler, device=torch.device("c
 
     Inputs:
         - collection_path: The path to the collection CSVs to generate a prediction from
-        - model: The trained deep learning model
+        - model_path: The path where the state dict for the trained deep learning model is located
         - scaler: The scaler used to normalize the training data
         - window_size: The number of steps being analyzed at a given time
     
