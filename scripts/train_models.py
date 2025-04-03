@@ -28,6 +28,7 @@ def main():
     os.makedirs(models_dir, exist_ok=True)
 
     # set the model save paths
+    naive_model_save_path = os.path.join(models_dir, 'ms_naive_model.pkl')
     traditional_model_save_path = os.path.join(models_dir, 'ms_traditional_model.pkl')
     dl_model_save_path = os.path.join(models_dir, 'ms_dl_model.pth')
 
@@ -40,7 +41,7 @@ def main():
     train_dataset, test_dataset, scaler = get_train_test_datasets(X, y, metadata)
 
     # train the naive model
-    train_naive_model(train_dataset, test_dataset)
+    train_naive_model(train_dataset, test_dataset, naive_model_save_path)
     
     # train and save the traditional model
     train_traditional_model(train_dataset, test_dataset, traditional_model_save_path)

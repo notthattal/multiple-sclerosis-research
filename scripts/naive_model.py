@@ -1,40 +1,85 @@
-from data_preprocessing import get_train_test_datasets
+from data_preprocessing import get_train_test_datasets, prep_collection_for_inference
+import joblib
 import numpy as np
 import os
 import pandas as pd
 from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score
 
-def train_naive_model(train_dataset, test_dataset):
+def train_naive_model(train_dataset, test_dataset, save_path=''):
     '''
-    Function to 'train' the mean model
+    Function to 'train' the naive model based on feature means.
 
     Inputs:
-        - train_dataset: The training dataset to be used as the basis for the mean model to make predictions from
+        - train_dataset: The training dataset to be used for computing mean features
         - test_dataset: The test dataset to predict on
+        - save_path: The optional path for where to save the naive model
     '''
-    # the ground-truth labels for the training and test sets
-    y_train = train_dataset.y
+    # set the test labels
     y_test = test_dataset.y
 
-    # Calculate the mean of the training data and use it to predict on the test set (mean(training data) >= 0.5 means MS otherwise health)
-    mean_prediction = int(np.mean(y_train) >= 0.5)
+    # compute the mean feature vector for MS and healthy samples in the training set
+    mean_ms = np.mean(train_dataset.X[train_dataset.y == 1], axis=0)
+    mean_healthy = np.mean(train_dataset.X[train_dataset.y == 0], axis=0)
 
-    # get the predictions on the test set
-    y_pred = np.full_like(y_test, fill_value=mean_prediction)
+    # compute the euclidean distance from each test sample to the MS and healthy means
+    dist_to_ms = np.linalg.norm(test_dataset.X - mean_ms, axis=1)
+    dist_to_healthy = np.linalg.norm(test_dataset.X - mean_healthy, axis=1)
 
-    # calculate the evaluation metrics for the mean model
+    # predict MS if the sample is closer to the MS mean otherwise predict healthy
+    y_pred = (dist_to_ms < dist_to_healthy).astype(int)
+
+    # Evaluate
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred, zero_division=0)
     recall = recall_score(y_test, y_pred, zero_division=0)
     f1 = f1_score(y_test, y_pred, zero_division=0)
 
-    # print the evaluation metrics and classification scores for the mean model
-    print(f"Mean Model Accuracy: {accuracy:.4f}")
-    print(f"Mean Model Precision: {precision:.4f}")
-    print(f"Mean Model Recall: {recall:.4f}")
-    print(f"Mean Model F1 Score: {f1:.4f}")
+    print(f"Naive Model Accuracy: {accuracy:.4f}")
+    print(f"Naive Model Precision: {precision:.4f}")
+    print(f"Naive Model Recall: {recall:.4f}")
+    print(f"Naive Model F1 Score: {f1:.4f}")
     print("\nClassification Report:")
     print(classification_report(y_test, y_pred, zero_division=0))
+
+    # save the model
+    if save_path != '':
+        mean_model = {
+            "mean_ms": mean_ms,
+            "mean_healthy": mean_healthy
+        }
+
+        joblib.dump(mean_model, save_path)
+
+def predict_naive_model(collection_path, model, scaler, window_size=4):
+    '''
+    Function to run inference on the naive model
+
+    Inputs:
+        - collection_path: the path for the collection of csvs to run inference on
+        - model: The naive model to use for inference
+        - scaler: The scaler used to scale the training data
+        - window_size: The rolling window used for prediction (i.e. the steps to look at at a time)
+    
+    Returns:
+        - The naive model prediction (1 for MS, 0 for healthy)
+    '''
+    # get the mean feature values for ms patients
+    ms_mean = model["mean_ms"]
+
+    # get the mean feature values for healthy patients
+    healthy_mean = model["mean_healthy"]
+
+    # extract the statistical features from the collection to match the training data
+    X_features = prep_collection_for_inference(collection_path, scaler, window_size)
+
+    # calculate the distance of the collection features to the MS mean and healthy means
+    dist_to_ms = np.linalg.norm(X_features - ms_mean, axis=1)
+    dist_to_healthy = np.linalg.norm(X_features - healthy_mean, axis=1)
+
+    # get the prediction from the naive model
+    probs = (dist_to_ms < dist_to_healthy).astype(int)
+
+    return np.mean(probs)
 
 def main():
     # set the root and data directories

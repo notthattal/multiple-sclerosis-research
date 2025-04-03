@@ -141,24 +141,31 @@ def train(model, train_loader, criterion, optimizer, device, epochs=50, schedule
     
     return model
 
-def predict_dl_model(collection_path, model, scaler, device, window_size=4):
+def predict_dl_model(collection_path, model_path, scaler, device=torch.device("cpu"), window_size=4):
     '''
     Run inference for a given collection on the deep learning model
 
     Inputs:
         - collection_path: The path to the collection CSVs to generate a prediction from
-        - model: The trained deep learning model
+        - model_path: The path where the state dict for the trained deep learning model is located
         - scaler: The scaler used to normalize the training data
         - window_size: The number of steps being analyzed at a given time
     
     Returns:
         - The majority vote prediction over all windows (1 = MS, 0 = Healthy) 
     '''
-    # set model to evaluation mode
-    model.eval()
-
     # extract the statistical features for the collection to match the input the model was trained on
     X_features = prep_collection_for_inference(collection_path, scaler, window_size)
+
+    # get the input size to the model
+    input_size = X_features.shape[1]
+
+    # instantiate the model
+    model = MSDeepLearningClassifier(input_size=input_size)
+    model.load_state_dict(torch.load(model_path, map_location=device))
+
+    # set model to evaluation mode
+    model.eval()
 
     # disable gradient tracking for inference
     with torch.no_grad():
@@ -168,11 +175,11 @@ def predict_dl_model(collection_path, model, scaler, device, window_size=4):
         # forward pass for the model
         outputs = model(inputs)
 
-        # get the predicted class labels
-        preds = torch.argmax(outputs, dim=1).cpu().numpy()
+        # get the predicted class probabilities
+        probs = torch.softmax(outputs, dim=1)[:, 1].cpu().numpy()
 
     # return the majority prediction as a single binary label
-    return int(np.round(np.mean(preds)))
+    return np.mean(probs)
 
 def evaluate(model, test_loader, device):
     '''
