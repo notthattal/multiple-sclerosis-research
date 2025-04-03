@@ -112,12 +112,9 @@ def predict_traditional_model(collection_path, model, scaler, window_size=4):
     X_features = prep_collection_for_inference(collection_path, scaler, window_size)
 
     # get predictions for each window of the training data
-    preds = model.predict(X_features)
-
-    # predict if MS or by getting a majority vote over all the windows predicted for this collection
-    prediction = int(np.round(np.mean(preds)))
-
-    return prediction
+    probs = model.predict_proba(X_features)[:, 1]
+    
+    return np.mean(probs)
 
 def main():
     #set the random seeds

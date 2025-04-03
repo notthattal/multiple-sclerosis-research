@@ -77,9 +77,9 @@ def predict_naive_model(collection_path, model, scaler, window_size=4):
     dist_to_healthy = np.linalg.norm(X_features - healthy_mean, axis=1)
 
     # get the prediction from the naive model
-    preds = (dist_to_ms < dist_to_healthy).astype(int)
+    probs = (dist_to_ms < dist_to_healthy).astype(int)
 
-    return int(np.round(np.mean(preds)))
+    return np.mean(probs)
 
 def main():
     # set the root and data directories
