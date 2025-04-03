@@ -1,5 +1,6 @@
 import os
 import glob
+import pkg_resources
 import pandas as pd
 import numpy as np
 import random
@@ -458,6 +459,20 @@ def prep_collection_for_inference(collection_path, scaler, window_size=4):
 
     return X_features
 
+def get_data_root():
+    """
+    Determines the root data directory
+    
+    Returns:
+        - the local data directory (one level up from this file, in a folder named 'data') if it exists. Otherwise, 
+          it falls back to the data directory installed within the 'multiple_sclerosis_research' package.
+    """
+    # Construct the absolute path to the local data directory
+    local_data = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
+    
+    # Return local_data if it exists. Otherwise, use pkg_resources to locate the installed data directory
+    return local_data if os.path.exists(local_data) else pkg_resources.resource_filename('multiple_sclerosis_research', 'data')
+
 def run_data_preprocessing_pipeline(ms_folder='MSGaits', normative_folder='NormativeGaits', output_dir='processed_data'):
     '''
     Runs the entire data preprocessing pipeline and saves the processed sensor and metadata to their respective files
@@ -468,14 +483,14 @@ def run_data_preprocessing_pipeline(ms_folder='MSGaits', normative_folder='Norma
         - output_dir (str): The subfolder name within the data directory to output the processed data
     '''
     # set the root directory
-    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-
+    root_dir = get_data_root()
+    
     # set the input raw data directories
-    ms_folder = os.path.join(root_dir, "data", "raw_data", ms_folder)
-    normative_folder = os.path.join(root_dir, "data", "raw_data", normative_folder)
+    ms_folder = os.path.join(root_dir, "raw_data", ms_folder)
+    normative_folder = os.path.join(root_dir, "raw_data", normative_folder)
 
     # set the directory to store the processed data
-    output_dir = os.path.join(root_dir, "data", output_dir)
+    output_dir = os.path.join(root_dir, output_dir)
 
     # get the processed arrays to be stored
     sensor_data, metadata = process_and_combine_data(ms_folder, normative_folder)
