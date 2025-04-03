@@ -175,11 +175,11 @@ def predict_dl_model(collection_path, model_path, scaler, device=torch.device("c
         # forward pass for the model
         outputs = model(inputs)
 
-        # get the predicted class labels
-        preds = torch.argmax(outputs, dim=1).cpu().numpy()
+        # get the predicted class probabilities
+        probs = torch.softmax(outputs, dim=1)[:, 1].cpu().numpy()
 
     # return the majority prediction as a single binary label
-    return int(np.round(np.mean(preds)))
+    return np.mean(probs)
 
 def evaluate(model, test_loader, device):
     '''
