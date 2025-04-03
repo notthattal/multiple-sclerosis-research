@@ -1,7 +1,7 @@
 # Multiple Sclerosis Gait Augmentation With The Cionic Neural Sleeve
 
 ## Notes on Running Code
-- Due to the sourcing of this dataset coming from Cionic itself, the sourcing code only works with their internal repository. The sourcing file works as a command line tool and a secret access token provided by Cionic is required to actual source the data. Thus, the file in this repository will not actually work. However, I have included the code to show an example of the steps I used to actually source this data.
+- Due to the sourcing of this dataset coming from Cionic itself, the code used to source the data is proprietary information. Thus, sourcing code has been omitted from this repository.
 
 ## Steps to run eda.py:
 1. Set-up and activate a virtual environment:
@@ -17,17 +17,38 @@ venv\Scripts\activate
 ```
 ### 2. Install the required dependencies
 ```
-pip install .
+% pip install -e .
 ```
-### 3. Run the EDA Pipeline
+### 3. Run Data Processing and Model Training
 ```
-run-eda
+train-models
 ```
-- Notes: The EDA file right now just runs the function 'plot_emg.' However, for actual EDA, this was modified depending on what aspect of the data was being analyzed at the time.
+- Notes: After training the models and scaler should be saved to the models directory
 
-### 4. (Optional) To run unit testing:
+## File Structure
+
 ```
-pytest -v
+multiple-sclerosis-research/
+├── data/
+│   ├── img/                        # images displayed in this README
+│   ├── raw/                        # raw sensor data (both EMG and IMU) for each collection
+│   └── processed/                  # processed data files
+├── notebooks/                      # Jupyter scratch notebooks for exploration and analysis
+├── scripts/                        # Source code for the project
+│   ├── __init__.py                 # Makes scripts a Python package
+│   ├── data_preprocessing.py       # Code to load and preprocess data
+│   ├── deep_learning_model.py      # Script to train the deep learning model
+│   ├── naive_model.py              # Script to train the naive model
+│   ├── traditional_model.py        # Script to train the traditional model
+│   └── train_models.py             # Script to run data preprocessing and train all models 
+├── models/                         # Trained and serialized models
+│   ├── ms_dl_model.pth             # Saved deep learning model
+│   ├── ms_traditional_model.pkl    # Saved traditional model
+│   └── scaler.pkl                  # Saved scaler that was used during training
+├── .gitignore                      # Files/folders to ignore in Git
+├── requirements.txt                # List of dependencies
+├── README.md                       # Project overview and usage instructions
+└── setup.py                        # Configures the packaging and distribution of the project
 ```
 
 ## Executive Summary
