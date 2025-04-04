@@ -1,7 +1,13 @@
 import sys
 import os
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+print("APP DIR:", os.path.dirname(__file__))
+print("FULL SYS.PATH:", sys.path)
+print("CONTENTS OF scripts/:", os.listdir(os.path.join(os.path.dirname(__file__), "scripts")))
+
+scripts_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "scripts"))
+if scripts_path not in sys.path:
+    sys.path.insert(0, scripts_path)
 
 import zipfile
 import tempfile
