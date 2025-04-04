@@ -1,5 +1,9 @@
-import zipfile
+import sys
 import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+import zipfile
 import tempfile
 import joblib
 from scripts.traditional_model import predict_traditional_model
