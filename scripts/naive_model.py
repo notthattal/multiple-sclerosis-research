@@ -1,7 +1,11 @@
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from data_preprocessing import get_train_test_datasets, prep_collection_for_inference
 import joblib
 import numpy as np
-import os
 import pandas as pd
 from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score
 

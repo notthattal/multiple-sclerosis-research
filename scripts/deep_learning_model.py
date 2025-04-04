@@ -1,6 +1,10 @@
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from data_preprocessing import get_train_test_datasets, prep_collection_for_inference, set_seeds
 import numpy as np
-import os
 import pandas as pd
 import torch
 import torch.nn as nn
