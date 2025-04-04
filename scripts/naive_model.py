@@ -1,7 +1,7 @@
 import sys
 import os
 
-sys.path.append(os.path.join(os.path.dirname(__file__), 'scripts'))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from data_preprocessing import get_train_test_datasets, prep_collection_for_inference
 import joblib
