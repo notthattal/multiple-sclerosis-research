@@ -1,5 +1,12 @@
-import zipfile
+import sys
 import os
+
+# this line is added to be able to call relative imports from the streamlit website
+scripts_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "scripts"))
+if scripts_path not in sys.path:
+    sys.path.insert(0, scripts_path)
+
+import zipfile
 import tempfile
 import joblib
 from scripts.traditional_model import predict_traditional_model
