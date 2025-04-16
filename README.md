@@ -50,7 +50,7 @@ multiple-sclerosis-research/
 │   ├── ms_traditional_model.pkl    # Saved traditional model
 │   └── scaler.pkl                  # Saved scaler that was used during training
 ├── .gitignore                      # Files/folders to ignore in Git
-├── app.py                          # File which sets up the frontend for the streamlit application
+├── app.py                          # File which sets up the frontend for the streamlit app
 ├── requirements.txt                # List of dependencies
 ├── README.md                       # Project overview and usage instructions
 └── setup.py                        # Configures the packaging and distribution of the project
