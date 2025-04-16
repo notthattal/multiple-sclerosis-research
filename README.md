@@ -27,7 +27,7 @@ venv\Scripts\activate
 ```
 train-models
 ```
-- Notes: After training the models and scaler should be saved to the models directory
+- Notes: After training, the models and scaler should be saved to the models directory
 
 ## File Structure
 
@@ -64,11 +64,17 @@ While MS is not fatal in and of itself, the health complications that can arise 
 
 ### Potential Applications
 
-This time series data is very promising for the scientific community in studying multiple sclerosis. This data can be used to analyze disease progression by looking at gait metrics and could potentially be used to derive predictive gait analysis. Perhaps with further analysis by the scientific community at large there is further potential in developing solutions for the benefit of the multiple sclerosis community. Some limitations to this dataset is that the studies in this dataset have a limited number of participants and may not be representative of the population as a whole. There are also other people who may have diseases like Parkinsons that make these models obsolete. For a more holistic modeling approach, we would most likely need to have access to the Parkinsons data to determine if these models can reliably detect differences among other diseases.
+This time series data is very promising for the scientific community in studying multiple sclerosis. This data can be used to analyze disease progression by looking at gait metrics and could potentially be used to derive predictive gait analysis. The models created also provide a robust way of perhaps augmenting current detection methods that are less intrusive for individuals. Perhaps with further analysis by the scientific community at large there is further potential in developing solutions for the benefit of the multiple sclerosis community. 
+
+### Limitations
+
+Some limitations to both the dataset used and models created are that the studies used have a limited number of participants and may not be representative of the population as a whole. There are also other people who may have diseases like Parkinsons that also experience foot drop similar to those with MS. For a more holistic modeling approach, further analysis is needed to have to determine if these models can reliably detect multiple sclerosis as opposed to just deviations from the norm. 
 
 ## Data Description
 ### Methods & Technical Implementation
-The FES device used in this study was the Cionic neural sleeve. This sleeve contains multiple FES gel electrodes which were located on the anterolateral region of the lower leg. Frequencies and pulse widths are programmable and each electrode’s current intensity is able to be configured independently. The data collected from the sleeve include inertial measurement units that were placed on the thigh and shank and can be used to reconstruct the leg’s spatial orientation, and EMGs. There were multiple different tests run for these different studies. In some, patients were instructed to perform two 6 minute walk tests (one unstimulated and one stimulated), and a timed 25-foot walk test (T25FW). For the 6-minute walk test, subjects were instructed to walk as far as possible for 6 minutes up and down a pathway, pivoting to turn at the end of each lap. Timing began when the participant stepped over the start line and distance traveled was recorded. If they were unable to complete 6 minutes, they were instructed to stop. Use of a walking aid and standing rests was permitted. The T25FW was used to measure gait speed for a timed 25-foot walk. Subjects were permitted to use an assistive device to complete this test as long as it was consistent across visits.
+4 different studies were used as the dataset for the development of this model. They were all collected from an FES device known as the Cionic neural sleeve. This sleeve contains multiple FES gel electrodes which were located on the anterolateral region of the lower leg. Frequencies and pulse widths are programmable and each electrode’s current intensity is able to be configured independently. The raw data collected from the sleeve include inertial measurement units that were placed on the thigh and shank and can be used to reconstruct the leg’s spatial orientation, and EMGs. There were multiple different tests run for these different studies. For example in some, patients were instructed to perform two 6 minute walk tests (one unstimulated and one stimulated) and others a timed 25-foot walk test (T25FW). 
+
+Data used for modeling consists of extracted statistical features combined with metadata provided by Cionic. The metadata was step duration which was the duration of each walking step as well as the affected leg side of the individual. The extracted statistical features were mean, median, std, min, max, skewness, kurtosis, 25th percentile, 75th percentile, peak-to-peak, total power, mean power, max power and dominant frequency. Each collection (1 walking test ran for one participant) was converted from having the shape [walking_steps, time_steps, num_sensors] to [walking_steps x time_steps, num_sensors]. Collections missing more than half of the sensor readings were dropped and the VL sensor was dropped since it was missing from many collections. In short, there were a total of 7 sensors analyzed. A rolling window was applied to each collection and only 4 walking steps were analyzed at a time for better generalizability across different tests and studies. 
 
 ### Content Description
 
@@ -102,9 +108,67 @@ The left will have:
 
 All CSV files contain all steps walked by participants for that particular test where the start time of each step and the duration is denoted for each row. Each numbered column represents a recording in order. There were 100 recorded time steps for each walking step.
 
-## Power Analysis
+## Modeling Approaches
 
-Since this dataset was directly sourced from and conducted by Cionic, the sample size was entirely dependent on the size of the study conducted. For instance, The MS pilot study consisted of 6 patients, 2 male and 4 female. Their ages ranged between 46-64 and they had been living with multiple sclerosis between 7-22 years. For each participant, only their most impacted leg was tested in the study. Each participant went through an initial assessment, a midpoint assessment and a final assessment. All participants were assigned a hip-worn Actigraph activity monitor, a Cionic Neural Sleeve (an adaptive, current steering FES brace) to be worn on the most impacted leg and prescribed a home-based intervention of 15 minutes of walking for 5 days a week for 12 weeks. The Actigraph was worn for the duration of the 12-week walking intervention, while the sleeve was only worn for 6 weeks of the study.
+### Naive (A Mean Model):
+- **Training**: Calculated the mean feature vector for healthy participants as well as the mean feature vector for participants known to have MS
+- **Inference**: Calculate the mean feature vector for the collection being tested and calculate the euclidean distance of that vector from the 2 vectors we trained our model on. If it’s closer to MS we predict MS otherwise we predict Healthy
+- **Other Models Evaluated**: A mean model based on the labels instead of the feature set
+
+### Traditional:
+- Trained a BaggingClassifier which consists of 5 separate GradientBoostingClassifiers using bootstrap sampling on 90% of the training data. The GB classifier has n_estimators=100, learning rate of 0.2, max depth of 3 and a min_samples_split of 2
+- **Other Models Evaluated**: Random Forests, Other Boosting models (e.g. XGBoost), other ensemble methods
+
+### Deep Learning:
+- A 4-layer MLP model trained on the same statistical data we used for the naive and tradtional approaches
+Uses batch norm and dropout, it is trained over 50 epochs and is trained to minimize the binary cross-entropy loss
+- **Other Models Evaluated**: LSTMs, CNNs, Time-Series Transformers and different MLPs
+
+## Results
+
+### Naive Model
+- Accuracy: 88.07%
+- Precision: 96.97%
+- Recall: 73.06%
+- F1-Score: 83.33%
+
+### Traditional Model
+- Accuracy: 97.95%
+- Precision: 99.84%
+- Recall: 95.13%
+- F1-Score: 97.43%
+
+### Deep Learning Model
+- Accuracy: 82.24%
+- Precision: 92.26%
+- Recall: 61.64%
+- F1-Score: 73.91%
+
+## Previous Efforts & Literature
+
+### Medical Testing Efforts:
+- MRI testing
+- Lumbar Punctures
+- Blood Tests
+- Eye Exams
+- Disease-modifying treatments to target inflammation
+- Steroids and plasma exchange
+
+### ML Efforts:
+- [Using grey matter to classify different types of MS](https://pmc.ncbi.nlm.nih.gov/articles/PMC9608344/)
+- [Classifying different types of MS by analyzing CNS regional atrophy on MRI data](https://pmc.ncbi.nlm.nih.gov/articles/PMC8090784/)
+- [Using a CNN trained on MRI data to differentiate types of multiple sclerosis from non-specific white matter changes](https://pubmed.ncbi.nlm.nih.gov/38183693/)
+
+## Evaluation Process & Metric Selection:
+
+### Evaluation Process
+- Stratified K-fold cross validation during training before finally training on the full training set 
+- Hold-out test set during the entire training process which was only used at the end to evaluate the real-world performance of the model
+- Entire collections were evaluated at a time since those correspond to one walking test for a single individual
+
+### Metrics:
+- Due to the potentially fatal results with classifying someone who truly has MS as being healthy, the primary metric chosen was recall
+- However all 4 (accuracy, precision, recall and F1) were evaluated
 
 ## Exploratory Data Analysis
 
@@ -137,10 +201,7 @@ Results:
 
 When inspecting the mean values across tests, I found that unassisted tests had much less variability. But, something I didn't expect to see was that for many of the different EMGs, the assisted vs unassisted graphs appear somewhat like mirrors of each other. I would mainly expect smaller shifts in the unassisted graph, but not an almost identical reflection of each other. Another interesting find is that for the participants with a left leg impairment, for 6/8 of their EMG readings, the midpoint assessment was their most extreme for assisted recordings. I initially thought that the initial assessment would have the most extreme values, but perhaps they were able to withstand more stimulation in the midpoint exam. For the right leg impaired participants, the unassisted tests seemed to have a majority of the most extreme values (a stark difference from the left leg impaired individuals). However, there are only 2 participants with right-leg impairements as opposed to 4 with left-leg so this could skew some of that data.
 
-When looking at the time-series themselves for each subject, it was very difficult to find relationships between the time-series and the subjects. I looked at both the 25-foot walk and the 6-minute walk test and found that there weren't many trends that followed. I found that different participants were more extreme than others depending on which electrode was being recorded, but it wasn't consistently one participant. That is, each subject had at least one electrode in which they had the most extreme values. But, that was also not consistent between assessments (i.e. There was not the case where a participant was consistently worse than the others between the initial, midpoint and final assessments). The 25-foot walk test seemed to have more extreme values and variation compared to the 6-minute walk test. I also tried analyzing the data to see if there were trends in things like gender, time since they've been diagnosed with MS, or if they were in group A or B, but have not found much correlation to that and the graphs. 
-
-## Link To Publicly Available Dataset
-Due to some missing data from Cionic that they are currently working on having re-uploaded, and Physionet's stated rule of "When a project is published, its content is fixed and cannot be changed" I have not yet uploaded the dataset to be open-sourced. However, if you would like to see the prepared research submission for Physionet you can find it [here](https://docs.google.com/document/d/1Y9x5Y1TU81gOJfwa9ax7w0_uB34mP11zjfe7-tt0ND8/edit?usp=sharing).
+When looking at the time-series themselves for each subject, it was very difficult to find relationships between the time-series and the subjects. I looked at both the 25-foot walk and the 6-minute walk test and found that there weren't many trends that followed. I found that different participants were more extreme than others depending on which electrode was being recorded, but it wasn't consistently one participant. That is, each subject had at least one electrode in which they had the most extreme values. But, that was also not consistent between assessments (i.e. There was not the case where a participant was consistently worse than the others between the initial, midpoint and final assessments). The 25-foot walk test seemed to have more extreme values and variation compared to the 6-minute walk test.
 
 ## Ethics Statement
 
